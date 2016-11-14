@@ -6,13 +6,9 @@ const requestAnimationFrame = require('raf');
 const $ = require('jquery');
 
 const Matrix = require('./particles/matrix.js');
-const Vector3D = require('./particles/vectors.js');
+const Vector3D = require('./particles/vector3d.js');
+const Vector2D = require('./particles/vector2d.js');
 const Cube = require('./particles/cube.js');
-
-const Vector2D = function (x,y) {
-  this.x = x || 0;
-  this.y = y || 0;
-};
 
 let meshes = [];
 
