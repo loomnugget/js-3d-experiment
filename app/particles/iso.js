@@ -1,6 +1,5 @@
 'use strict';
 
-const Matrix = require('./particles/matrix.js');
 const Vector3D = require('./particles/vector3d.js');
 
 const Face = function(vertex1, vertex2, vertex3) {
