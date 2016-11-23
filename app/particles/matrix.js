@@ -1,6 +1,6 @@
 'use strict';
 
-const Vector3D = require('./vectors.js');
+const Vector3D = require('./vector3d.js');
 
 const Matrix = module.exports = function() {
   this.m = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
@@ -37,23 +37,26 @@ Matrix.LookAtLH = function(camPosition, camTarget, upVector) {
   //console.log('upVector', upVector);
   let result = new Matrix();
 
-  let zAxis = camTarget.subtract(camPosition).normalize();
-  let xAxis = upVector.cross(zAxis).normalize();
-  let yAxis = zAxis.cross(xAxis).normalize();
+  let zAxis = camTarget.subtract(camPosition);
+  zAxis.normalize();
+  let xAxis = Vector3D.Cross(upVector, zAxis);
+  zAxis.normalize();
+  let yAxis = Vector3D.Cross(zAxis, xAxis);
+  yAxis.normalize();
 
   // console.log('zAxis', zAxis);
   // console.log('yAxis', yAxis);
   // console.log('xAxis', xAxis);
-  let ex = xAxis.dot(camPosition);
-  let ey = yAxis.dot(camPosition);
-  let ez = zAxis.dot(camPosition);
+  let px = -Vector3D.Dot(xAxis, camPosition);
+  let py = -Vector3D.Dot(yAxis, camPosition);
+  let pz = -Vector3D.Dot(zAxis, camPosition);
   // console.log('ex',ex);
   // console.log('ey',ey);
   // console.log('ez',ez);
   result.m[0] = xAxis.x, result.m[1] = yAxis.x, result.m[2] = zAxis.x, result.m[3] = 0;
   result.m[4] = xAxis.y, result.m[5] = yAxis.y, result.m[6] = zAxis.y, result.m[7] = 0;
   result.m[8] = xAxis.z, result.m[9] = yAxis.z, result.m[10] = zAxis.z, result.m[11] = 0;
-  result.m[12] = -ex, result.m[13] = -ey, result.m[14] = -ez, result.m[15] = 1;
+  result.m[12] = px, result.m[13] = py, result.m[14] = pz, result.m[15] = 1;
   return result;
 };
 
@@ -71,7 +74,7 @@ Matrix.PerspectiveLH = function (width, height, znear, zfar) {
 //left handed perspective matrix
 Matrix.PerspectiveFovLH = function (fov, aspect, znear, zfar) {
   let result = new Matrix();
-  let tan = 1.0 / (Math.tan(fov * 0.5));
+  let tan = 1 / (Math.tan(fov * 0.5));
   result.m[0] = tan/aspect;
   result.m[5] = tan;
   result.m[10] = -zfar / (znear - zfar);

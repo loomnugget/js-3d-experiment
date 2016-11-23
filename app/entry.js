@@ -15,7 +15,7 @@ let meshes = [];
 const Mesh = function(shape) {
   this.vertices = shape.vertices;
   this.rotation = new Vector3D(0,0,0);
-  this.center = new Vector3D(0,0,0); // coordinate system begins at center of mesh
+  this.position = new Vector3D(0,0,0);
 };
 
 Mesh.prototype.sortByZIndex = function(a, b){
@@ -35,10 +35,8 @@ const Device = function() {
   this.ctx = this.canvas[0].getContext('2d');
   this.canvas.width = 1000;
   this.canvas.height = 1000;
-  this.centerX = this.canvas.width/2;
-  this.centerY = this.canvas.height/2;
   // Translate the surface's origin to the center of the canvas
-  this.ctx.translate(this.centerX, this.centerY);
+  //this.ctx.translate(100, 100);
 };
 
 Device.prototype.Clear = function(){
@@ -49,14 +47,15 @@ Device.prototype.Project = function(point, transformMatrix){
   let projected = Vector3D.transformCoordinates(point, transformMatrix);
   this.x = projected.x * this.canvas.width + this.canvas.width / 2;
   this.y = -projected.y * this.canvas.height + this.canvas.height / 2;
+  //console.log(this.x, this.y);
+  //this.x = projected.x;
+  //this.y = -projected.y;
   return new Vector2D(this.x, this.y);
 };
 
 Device.prototype.drawPoint = function(vertex) {
   this.ctx.fillStyle = 'rgba(255,255,255,.7)';
-  this.ctx.beginPath();
-  this.ctx.arc(vertex.x, vertex.y, 2, 0, Math.PI * 2, false);
-  this.ctx.fill();
+  this.ctx.fillRect(vertex.x, vertex.y, 1, 1);
 };
 
 Device.prototype.Render = function(camera, meshes) {
@@ -66,9 +65,12 @@ Device.prototype.Render = function(camera, meshes) {
   for (let i = 0; i < meshes.length; i++) {
     let currentMesh = meshes[i];
     let rotationMatrix = Matrix.rotationYPR(currentMesh.rotation.y, currentMesh.rotation.x, currentMesh.rotation.z);
-    let translationMatrix = Matrix.Translation(currentMesh.rotation.y, currentMesh.rotation.x, currentMesh.rotation.z);
+    let translationMatrix = Matrix.Translation(currentMesh.position.y, currentMesh.position.x, currentMesh.position.z);
     let worldMatrix = rotationMatrix.multiply(translationMatrix);
+    console.log('world', worldMatrix);
+    // Final matrix to be applied to each vertex
     let transformMatrix = worldMatrix.multiply(viewMatrix).multiply(projectionMatrix);
+    console.log(transformMatrix);
     // Loop through vertices in each mesh
     for(let i = 0; i < currentMesh.vertices.length; i++) {
       let projectedPoint = this.Project(currentMesh.vertices[i], transformMatrix);
@@ -81,6 +83,10 @@ let camera = new Camera();
 let device = new Device();
 let testShape = new Cube();
 let mesh = new Mesh(testShape);
+// for(let i = 0; i < testShape.vertices.length; i++) {
+//   device.drawPoint(testShape.vertices[i]);
+// }
+//device.Render(camera, meshes);
 
 function init() {
   meshes.push(mesh);
@@ -88,11 +94,11 @@ function init() {
 }
 init();
 
-// Rendering loop handler
+//Rendering loop handler
 function drawingLoop() {
   device.Clear();
   mesh.rotation.x += 0.01;
   mesh.rotation.y += 0.01;
   device.Render(camera, meshes);
-  requestAnimationFrame(drawingLoop);
+  //requestAnimationFrame(drawingLoop);
 }
