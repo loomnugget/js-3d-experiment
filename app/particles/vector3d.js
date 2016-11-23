@@ -14,13 +14,16 @@ Vector3D.prototype.add = function (v2) {
 };
 
 Vector3D.prototype.subtract = function (v2) {
-  this.x = this.x/v2;
-  this.y = this.y/v2;
-  this.z = this.z/v2;
+  this.x = this.x - v2.x;
+  this.y = this.y - v2.y;
+  this.z = this.z - v2.z;
   return new Vector3D(this.x, this.y, this.z);
 };
 
 Vector3D.prototype.divide = function(v2) {
+  this.x = this.x/v2.x;
+  this.y = this.y/v2.y;
+  this.z = this.z/v2.z;
   return new Vector3D(this.x, this.y, this.z);
 };
 
@@ -32,22 +35,23 @@ Vector3D.prototype.cross = function(v2) {
 };
 
 Vector3D.prototype.dot = function(v2) {
-  return (this.x * v2.x + this.y * v2.y + this.z * v2.z);
+  return (this.x * v2.x) + (this.y * v2.y) + (this.z * v2.z);
 };
 
 Vector3D.prototype.length = function() {
-  return Math.sqrt(this.dot(this));
+  return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
 },
 
-Vector3D.transformCoordinates = function(transform) {
-  this.x = (this.x * transform.matrix[0]) + (this.y * transform.matrix[4]) + (this.z * transform.matrix[8]) + transform.matrix[12];
-  this.y = (this.x * transform.matrix[1]) + (this.y * transform.matrix[5]) + (this.z * transform.matrix[9]) + transform.matrix[13];
-  this.z = (this.x * transform.matrix[2]) + (this.y * transform.matrix[6]) + (this.z * transform.matrix[10]) + transform.matrix[14];
-  this.w = (this.x * transform.matrix[3]) + (this.y * transform.matrix[7]) + (this.z * transform.matrix[11]) + transform.matrix[15];
-  return new Vector3D(this.x / this.w, this.y / this.w, this.z / this.w);
+Vector3D.prototype.normalize = function() {
+  let len = this.length();
+  let ilen = 1/len;
+  return new Vector3D(this.x*ilen, this.y*ilen, this.z*ilen);
 };
 
-// Normalizing vectors makes their values be between -1 and 1
-Vector3D.prototype.normalize = function() {
-  return this.divide(this.length());
+Vector3D.transformCoordinates = function(point, transform) {
+  point.x = (point.x * transform.m[0]) + (point.y * transform.m[4]) + (point.z * transform.m[8]) + transform.m[12];
+  point.y = (point.x * transform.m[1]) + (point.y * transform.m[5]) + (point.z * transform.m[9]) + transform.m[13];
+  point.z = (point.x * transform.m[2]) + (point.y * transform.m[6]) + (point.z * transform.m[10]) + transform.m[14];
+  point.w = (point.x * transform.m[3]) + (point.y * transform.m[7]) + (point.z * transform.m[11]) + transform.m[15];
+  return new Vector3D(point.x / point.w, point.y / point.w, point.z / point.w);
 };

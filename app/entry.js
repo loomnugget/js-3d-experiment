@@ -31,7 +31,7 @@ const Camera = function() {
 
 // 3D core - Takes 3D mesh coordinates and projects into 2D world
 const Device = function() {
-  this.canvas = $('#frontBuffer');
+  this.canvas = $('#canvas');
   this.ctx = this.canvas[0].getContext('2d');
   this.canvas.width = 1000;
   this.canvas.height = 1000;
