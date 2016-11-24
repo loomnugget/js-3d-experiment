@@ -1,6 +1,6 @@
 'use strict';
 
-const Vector3D = require('./particles/vector3d.js');
+const Vector3D = require('./vector3d.js');
 
 const Face = function(vertex1, vertex2, vertex3) {
   this.vertex1 = vertex1;
@@ -8,7 +8,7 @@ const Face = function(vertex1, vertex2, vertex3) {
   this.vertex3 = vertex3;
 };
 
-const Isosahedron = function() {
+const Isosahedron = module.exports = function() {
   let r = 1;
   let f = (1 + Math.sqrt(5))/2;
   this.vertices = [
