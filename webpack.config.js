@@ -1,5 +1,6 @@
 'use strict';
 
+const webpack = require('webpack');
 const HTMLPlugin = require('html-webpack-plugin'); //creates index.html and injects scripts
 //alows us to dynamically add script tags - names them based on hash
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -15,7 +16,6 @@ module.exports = {
       template: `${__dirname}/app/index.html`,
     }),
     new ExtractTextPlugin('bundle.css'),
-
   ],
   sassLoader: {
     includePaths: [`${__dirname}/app/scss/lib`],
@@ -44,7 +44,6 @@ module.exports = {
       {
         test:/\.(eot|woff|ttf|svg).*/,
         loader: 'url?limit=10000&name=fonts/[hash].[ext]',
-
       },
     ],
   },

@@ -12,6 +12,7 @@ const Cube = require('./particles/cube.js');
 
 let meshes = [], camera, device, mesh;
 
+
 const Mesh = function(shape) {
   this.vertices = shape.vertices;
   this.rotation = new Vector3D(45,45,45);
@@ -31,22 +32,21 @@ const Camera = function() {
 
 // 3D core - Takes 3D mesh coordinates and projects into 2D world
 const Device = function() {
-  this.canvas = $('#canvas');
+  this.canvas = $('canvas');
   this.ctx = this.canvas[0].getContext('2d');
   this.canvas.width = 1000;
   this.canvas.height = 500;
-  // Translate the surface's origin to the center of the canvas
-  this.ctx.translate(100, 70);
+
 };
 
 Device.prototype.Clear = function(){
-  this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  this.ctx.clearRect(0, 0, 1000, 500);
 };
 
 Device.prototype.Project = function(point, transformMatrix){
   let projected = Vector3D.transformCoordinates(point, transformMatrix);
-  let x = projected.x * 100;
-  let y = -projected.y * 100;
+  let x = projected.x * 100 + 100;
+  let y = -projected.y * 100 + 100;
   return new Vector2D(x, y);
 };
 
@@ -57,7 +57,7 @@ Device.prototype.drawPoint = function(vertex) {
 
 Device.prototype.Render = function(camera, meshes) {
   let viewMatrix = Matrix.LookAtLH(camera.position, camera.target, camera.up);
-  let projectionMatrix = Matrix.PerspectiveFovLH(0.78, this.canvas.width / this.canvas.height, .01, 1.0);
+  let projectionMatrix = Matrix.PerspectiveFovLH(0.78, 4 / 3, .01, 1.0);
   console.log('view', viewMatrix);
   console.log('projection', projectionMatrix);
   // Loop through meshes
@@ -105,5 +105,5 @@ function drawingLoop() {
   mesh.rotation.x += 0.01;
   mesh.rotation.y += 0.01;
   device.Render(camera, meshes);
-  //requestAnimationFrame(drawingLoop);
+  requestAnimationFrame(drawingLoop);
 }
