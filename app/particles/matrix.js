@@ -32,31 +32,24 @@ Matrix.prototype.multiply = function (other) {
 };
 
 Matrix.LookAtLH = function(camPosition, camTarget, upVector) {
-  //console.log('camPos', camPosition);
-  //console.log('camTar', camTarget);
-  //console.log('upVector', upVector);
   let result = new Matrix();
-
-  let zAxis = camTarget.subtract(camPosition);
-  zAxis.normalize();
-  let xAxis = Vector3D.Cross(upVector, zAxis);
-  zAxis.normalize();
-  let yAxis = Vector3D.Cross(zAxis, xAxis);
-  yAxis.normalize();
-
+  let zAxis = (camTarget.subtract(camPosition)).normalize();
+  let xAxis = (Vector3D.Cross(upVector, zAxis)).normalize();
+  let yAxis = (Vector3D.Cross(zAxis, xAxis)).normalize();
   // console.log('zAxis', zAxis);
   // console.log('yAxis', yAxis);
   // console.log('xAxis', xAxis);
+
   let px = -Vector3D.Dot(xAxis, camPosition);
   let py = -Vector3D.Dot(yAxis, camPosition);
   let pz = -Vector3D.Dot(zAxis, camPosition);
-  // console.log('ex',ex);
-  // console.log('ey',ey);
-  // console.log('ez',ez);
+  // console.log('px', px);
+  // console.log('py', py);
+  // console.log('pz', pz);
   result.m[0] = xAxis.x, result.m[1] = yAxis.x, result.m[2] = zAxis.x, result.m[3] = 0;
   result.m[4] = xAxis.y, result.m[5] = yAxis.y, result.m[6] = zAxis.y, result.m[7] = 0;
   result.m[8] = xAxis.z, result.m[9] = yAxis.z, result.m[10] = zAxis.z, result.m[11] = 0;
-  result.m[12] = px, result.m[13] = py, result.m[14] = pz, result.m[15] = 1;
+  result.m[12] = px; result.m[13] = py; result.m[14] = pz; result.m[15] = 1;
   return result;
 };
 

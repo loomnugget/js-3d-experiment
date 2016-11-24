@@ -34,9 +34,8 @@ Vector3D.prototype.length = function() {
 Vector3D.prototype.normalize = function() {
   let len = this.length();
   let ilen = 1/len;
-  this.x*ilen; this.y*ilen; this.z*ilen;
+  return new Vector3D(this.x*ilen, this.y*ilen, this.z*ilen);
 };
-
 
 Vector3D.Cross = function(v1, v2) {
   let x = v1.y * v2.z - v1.z * v2.y;
@@ -50,9 +49,9 @@ Vector3D.Dot = function(v1, v2) {
 };
 
 Vector3D.transformCoordinates = function(point, transform) {
-  let x = (point.x * transform.m[0]) + (point.y * transform.m[4]) + (point.z * transform.m[8]) + transform.m[12];
-  let y = (point.x * transform.m[1]) + (point.y * transform.m[5]) + (point.z * transform.m[9]) + transform.m[13];
-  let z = (point.x * transform.m[2]) + (point.y * transform.m[6]) + (point.z * transform.m[10]) + transform.m[14];
-  let w = (point.x * transform.m[3]) + (point.y * transform.m[7]) + (point.z * transform.m[11]) + transform.m[15];
+  let x = point.x * transform.m[0] + point.y * transform.m[4] + point.z * transform.m[8] + transform.m[12];
+  let y = point.x * transform.m[1] + point.y * transform.m[5] + point.z * transform.m[9] + transform.m[13];
+  let z = point.x * transform.m[2] + point.y * transform.m[6] + point.z * transform.m[10] + transform.m[14];
+  let w = point.x * transform.m[3] + point.y * transform.m[7] + point.z * transform.m[11] + transform.m[15];
   return new Vector3D(x/w, y/w, z/w);
 };

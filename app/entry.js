@@ -10,11 +10,11 @@ const Vector3D = require('./particles/vector3d.js');
 const Vector2D = require('./particles/vector2d.js');
 const Cube = require('./particles/cube.js');
 
-let meshes = [];
+let meshes = [], camera, device, mesh;
 
 const Mesh = function(shape) {
   this.vertices = shape.vertices;
-  this.rotation = new Vector3D(0,0,0);
+  this.rotation = new Vector3D(45,45,45);
   this.position = new Vector3D(0,0,0);
 };
 
@@ -34,9 +34,9 @@ const Device = function() {
   this.canvas = $('#canvas');
   this.ctx = this.canvas[0].getContext('2d');
   this.canvas.width = 1000;
-  this.canvas.height = 1000;
+  this.canvas.height = 500;
   // Translate the surface's origin to the center of the canvas
-  //this.ctx.translate(100, 100);
+  this.ctx.translate(100, 70);
 };
 
 Device.prototype.Clear = function(){
@@ -45,12 +45,9 @@ Device.prototype.Clear = function(){
 
 Device.prototype.Project = function(point, transformMatrix){
   let projected = Vector3D.transformCoordinates(point, transformMatrix);
-  this.x = projected.x * this.canvas.width + this.canvas.width / 2;
-  this.y = -projected.y * this.canvas.height + this.canvas.height / 2;
-  //console.log(this.x, this.y);
-  //this.x = projected.x;
-  //this.y = -projected.y;
-  return new Vector2D(this.x, this.y);
+  let x = projected.x * 100;
+  let y = -projected.y * 100;
+  return new Vector2D(x, y);
 };
 
 Device.prototype.drawPoint = function(vertex) {
@@ -60,35 +57,43 @@ Device.prototype.drawPoint = function(vertex) {
 
 Device.prototype.Render = function(camera, meshes) {
   let viewMatrix = Matrix.LookAtLH(camera.position, camera.target, camera.up);
-  let projectionMatrix = Matrix.PerspectiveFovLH(0.78, 4/3, .01, 1.0);
+  let projectionMatrix = Matrix.PerspectiveFovLH(0.78, this.canvas.width / this.canvas.height, .01, 1.0);
+  console.log('view', viewMatrix);
+  console.log('projection', projectionMatrix);
   // Loop through meshes
   for (let i = 0; i < meshes.length; i++) {
     let currentMesh = meshes[i];
-    let rotationMatrix = Matrix.rotationYPR(currentMesh.rotation.y, currentMesh.rotation.x, currentMesh.rotation.z);
-    let translationMatrix = Matrix.Translation(currentMesh.position.y, currentMesh.position.x, currentMesh.position.z);
-    let worldMatrix = rotationMatrix.multiply(translationMatrix);
+    // let rotationMatrix = Matrix.rotationYPR(currentMesh.rotation.y, currentMesh.rotation.x, currentMesh.rotation.z);
+    // let translationMatrix = Matrix.Translation(currentMesh.position.y, currentMesh.position.x, currentMesh.position.z);
+    let worldMatrix = Matrix.rotationYPR(currentMesh.rotation.y, currentMesh.rotation.x, currentMesh.rotation.z).multiply(Matrix.Translation(currentMesh.position.y, currentMesh.position.x, currentMesh.position.z));
     console.log('world', worldMatrix);
     // Final matrix to be applied to each vertex
     let transformMatrix = worldMatrix.multiply(viewMatrix).multiply(projectionMatrix);
-    console.log(transformMatrix);
+    console.log('transform', transformMatrix);
     // Loop through vertices in each mesh
     for(let i = 0; i < currentMesh.vertices.length; i++) {
       let projectedPoint = this.Project(currentMesh.vertices[i], transformMatrix);
+      console.log('projected points', projectedPoint);
       this.drawPoint(projectedPoint);
     }
   }
 };
+Device.prototype.Rotate = function(camera, meshes) {
+  for (let i = 0; i < meshes.length; i++) {
+    let currentMesh = meshes[i];
+    let rotationMatrix = Matrix.rotationYPR(currentMesh.rotation.y, currentMesh.rotation.x, currentMesh.rotation.z);
+    for(let i = 0; i < currentMesh.vertices.length; i++) {
+      this.drawPoint(currentMesh.vertices[i]);
+    }
+  }
+};
 
-let camera = new Camera();
-let device = new Device();
-let testShape = new Cube();
-let mesh = new Mesh(testShape);
-// for(let i = 0; i < testShape.vertices.length; i++) {
-//   device.drawPoint(testShape.vertices[i]);
-// }
-//device.Render(camera, meshes);
 
 function init() {
+  camera = new Camera();
+  device = new Device();
+  let testShape = new Cube();
+  mesh = new Mesh(testShape);
   meshes.push(mesh);
   requestAnimationFrame(drawingLoop);
 }
