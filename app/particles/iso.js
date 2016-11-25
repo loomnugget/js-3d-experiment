@@ -26,29 +26,28 @@ const Isosahedron = module.exports = function() {
     new Vector3D(-r,0,-f*r),
   ];
   this.faces = [
-    //top
-    new Face(this.vertices[0], this.vertices[1], this.vertices[2]),
-    new Face(this.vertices[0], this.vertices[2], this.vertices[3]),
-    new Face(this.vertices[0], this.vertices[3], this.vertices[4]),
-    new Face(this.vertices[0], this.vertices[4], this.vertices[5]),
-    new Face(this.vertices[0], this.vertices[5], this.vertices[1]),
-    //bottom
-    new Face(this.vertices[11], this.vertices[10], this.vertices[6]),
-    new Face(this.vertices[11], this.vertices[6], this.vertices[7]),
-    new Face(this.vertices[11], this.vertices[7], this.vertices[8]),
-    new Face(this.vertices[11], this.vertices[8], this.vertices[9]),
-    new Face(this.vertices[11], this.vertices[9], this.vertices[10]),
-    //middle - triangle up
-    new Face(this.vertices[6], this.vertices[5], this.vertices[1]),
-    new Face(this.vertices[7], this.vertices[1], this.vertices[2]),
-    new Face(this.vertices[8], this.vertices[2], this.vertices[3]),
-    new Face(this.vertices[9], this.vertices[3], this.vertices[4]),
-    new Face(this.vertices[10], this.vertices[4], this.vertices[5]),
-    //middle- triangle down
-    new Face(this.vertices[5], this.vertices[6], this.vertices[10]),
-    new Face(this.vertices[1], this.vertices[6], this.vertices[7]),
-    new Face(this.vertices[2], this.vertices[7], this.vertices[8]),
-    new Face(this.vertices[3], this.vertices[8], this.vertices[9]),
-    new Face(this.vertices[4], this.vertices[9], this.vertices[10]),
+    { A:0, B:1, C:2 },
+    { A:0, B:2, C:3 },
+    { A:0, B:3, C:4 },
+    { A:0, B:4, C:5 },
+    { A:0, B:5, C:1 },
+
+    { A:11, B:10, C:6 },
+    { A:11, B:6, C:7 },
+    { A:11, B:7, C:8 },
+    { A:11, B:8, C:9 },
+    { A:11, B:9, C:10 },
+
+    { A:6, B:5, C:1 },
+    { A:7, B:1, C:2 },
+    { A:8, B:2, C:3 },
+    { A:9, B:3, C:4 },
+    { A:10, B:4, C:5 },
+
+    { A:5, B:6, C:10 },
+    { A:1, B:6, C:7 },
+    { A:2, B:7, C:8 },
+    { A:3, B:8, C:9 },
+    { A:4, B:9, C:10 },
   ];
 };

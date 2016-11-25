@@ -35,8 +35,9 @@ const Camera = function() {
 const Device = function() {
   this.canvas = $('canvas');
   this.ctx = this.canvas[0].getContext('2d');
-  this.canvas.width = 1000;
-  this.canvas.height = 1000;
+  this.width = this.canvas[0].width;
+  this.height = this.canvas[0].height;
+  console.log(this.width, this.height);
 };
 
 Device.prototype.Clear = function(){
@@ -58,18 +59,12 @@ Device.prototype.drawPoint = function(vertex) {
 Device.prototype.Render = function(camera, meshes) {
   let viewMatrix = Matrix.LookAtLH(camera.position, camera.target, camera.up);
   let projectionMatrix = Matrix.PerspectiveFovLH(0.78, 4/3, .01, 1.0);
-  //console.log('view', viewMatrix);
-  //console.log('projection', projectionMatrix);
   // Loop through meshes
   for (let i = 0; i < meshes.length; i++) {
     let currentMesh = meshes[i];
-    // let rotationMatrix = Matrix.rotationYPR(currentMesh.rotation.y, currentMesh.rotation.x, currentMesh.rotation.z);
-    // let translationMatrix = Matrix.Translation(currentMesh.position.y, currentMesh.position.x, currentMesh.position.z);
     let worldMatrix = Matrix.rotationYPR(currentMesh.rotation.y, currentMesh.rotation.x, currentMesh.rotation.z).multiply(Matrix.Translation(currentMesh.position.y, currentMesh.position.x, currentMesh.position.z));
-    //console.log('world', worldMatrix);
     // Final matrix to be applied to each vertex
     let transformMatrix = worldMatrix.multiply(viewMatrix).multiply(projectionMatrix);
-    //console.log('transform', transformMatrix);
     // Loop through vertices in each mesh
     for(let i = 0; i < currentMesh.vertices.length; i++) {
       let projectedPoint = this.Project(currentMesh.vertices[i], transformMatrix);
