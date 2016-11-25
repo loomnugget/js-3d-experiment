@@ -68,7 +68,7 @@ Matrix.PerspectiveFovLH = function (fov, aspect, znear, zfar) {
   result.m[10] = -zfar / (znear - zfar);
   result.m[11] = 1;
   result.m[14] = (znear * zfar) / (znear - zfar);
-  result.m[1] = result.m[2] = result.m[3] = result.m[4] = result.m[6] = result.m[7] = result.m[12] = result.m[13] = result.m[15] = 0;
+  result.m[1] = result.m[2] = result.m[3] = result.m[4] = result.m[6] = result.m[7] = result.m[8] = result.m[9] = result.m[12] = result.m[13] = result.m[15] = 0;
   return result;
 };
 
@@ -86,18 +86,23 @@ Matrix.rotationYPR = function(yaw, pitch, roll) {
 
 Matrix.rotateX = function(theta) {
   let result = new Matrix();
-  result.m[5] = result.m[9] = result.m[10] = Math.cos(theta);
+  let cos = Math.cos(theta);
+  let sin = Math.sin(theta);
+  result.m[5] = result.m[10] = cos;
+  result.m[9] = -sin;
   result.m[0] = result.m[15] = 1;
-  result.m[6] = -Math.sin(theta);
+  result.m[6] = sin;
   result.m[1] = result.m[2] = result.m[3] = result.m[4] = result.m[7] = result.m[8] = result.m[11] = result.m[12] = result.m[13] = result.m[14] = 0;
   return result;
 };
 
 Matrix.rotateY = function(theta) {
   let result = new Matrix();
-  result.m[0] = result.m[10] = Math.cos(theta);
-  result.m[2] = Math.sin(theta);
-  result.m[8] = -Math.sin(theta);
+  let cos = Math.cos(theta);
+  let sin = Math.sin(theta);
+  result.m[0] = result.m[10] = cos;
+  result.m[2] = -sin;
+  result.m[8] = sin;
   result.m[1] = result.m[3] = result.m[4] = result.m[6] = result.m[7] = result.m[9] = result.m[11] = result.m[12] = result.m[13] = result.m[14] = 0;
   result.m[5] = result.m[15] = 1;
   return result;
@@ -105,9 +110,11 @@ Matrix.rotateY = function(theta) {
 
 Matrix.rotateZ = function(theta) {
   let result = new Matrix();
-  result.m[0] = result.m[5] = Math.cos(theta);
-  result.m[4] = Math.sin(theta);
-  result.m[1] = -Math.sin(theta);
+  let cos = Math.cos(theta);
+  let sin = Math.sin(theta);
+  result.m[0] = result.m[5] = cos;
+  result.m[4] = -sin;
+  result.m[1] = sin;
   result.m[2] = result.m[3] = result.m[6] = result.m[7] = result.m[8] = result.m[9] = result.m[11] = result.m[12] = result.m[13] = result.m[14] = 0;
   result.m[10] = result.m[15] = 1;
   return result;

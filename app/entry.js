@@ -11,8 +11,7 @@ const Vector2D = require('./particles/vector2d.js');
 const Cube = require('./particles/cube.js');
 const Isosahedron = require('./particles/iso.js');
 
-let meshes = [], camera, device, mesh;
-
+let meshes = [], camera, device, mesh, zValues = [];
 
 const Mesh = function(shape) {
   this.vertices = shape.vertices;
@@ -22,6 +21,17 @@ const Mesh = function(shape) {
 
 Mesh.prototype.sortByZIndex = function(a, b){
   return a.z - b.z;
+};
+
+Mesh.prototype.calcDepth = function(facesArray) {
+//Back ones are drawn first according to their average z-value
+//The larger the z-value, the closer the faces are to the viewer
+  let avgZ = 0;
+  for(var i = 0; i < facesArray.length; i++) { //loop through vertices of each face
+    avgZ += (facesArray[i].z); //add up z values for each vertex
+  }
+  avgZ/3; //divide by number of vertices in each face (3)
+  zValues.push(avgZ); //push value to new array
 };
 
 const Camera = function() {
