@@ -9,17 +9,29 @@ const Matrix = require('./particles/matrix.js');
 const Vector3D = require('./particles/vector3d.js');
 const Vector2D = require('./particles/vector2d.js');
 const Cube = require('./particles/cube.js');
+const Isosahedron = require('./particles/iso.js');
 
-let meshes = [];
+let meshes = [], camera, device, mesh, zValues = [];
 
 const Mesh = function(shape) {
   this.vertices = shape.vertices;
-  this.rotation = new Vector3D(0,0,0);
-  this.center = new Vector3D(0,0,0); // coordinate system begins at center of mesh
+  this.rotation = new Vector3D(45,45,45);
+  this.position = new Vector3D(0,0,0);
 };
 
 Mesh.prototype.sortByZIndex = function(a, b){
   return a.z - b.z;
+};
+
+Mesh.prototype.calcDepth = function(facesArray) {
+//Back ones are drawn first according to their average z-value
+//The larger the z-value, the closer the faces are to the viewer
+  let avgZ = 0;
+  for(var i = 0; i < facesArray.length; i++) { //loop through vertices of each face
+    avgZ += (facesArray[i].z); //add up z values for each vertex
+  }
+  avgZ/3; //divide by number of vertices in each face (3)
+  zValues.push(avgZ); //push value to new array
 };
 
 const Camera = function() {
@@ -31,32 +43,27 @@ const Camera = function() {
 
 // 3D core - Takes 3D mesh coordinates and projects into 2D world
 const Device = function() {
-  this.canvas = $('#canvas');
+  this.canvas = $('canvas');
   this.ctx = this.canvas[0].getContext('2d');
-  this.canvas.width = 1000;
-  this.canvas.height = 1000;
-  this.centerX = this.canvas.width/2;
-  this.centerY = this.canvas.height/2;
-  // Translate the surface's origin to the center of the canvas
-  this.ctx.translate(this.centerX, this.centerY);
+  this.width = this.canvas[0].width;
+  this.height = this.canvas[0].height;
+  console.log(this.width, this.height);
 };
 
 Device.prototype.Clear = function(){
-  this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  this.ctx.clearRect(0, 0, 1000, 1000);
 };
 
 Device.prototype.Project = function(point, transformMatrix){
   let projected = Vector3D.transformCoordinates(point, transformMatrix);
-  this.x = projected.x * this.canvas.width + this.canvas.width / 2;
-  this.y = -projected.y * this.canvas.height + this.canvas.height / 2;
-  return new Vector2D(this.x, this.y);
+  let x = projected.x * 50 + 100;
+  let y = -projected.y * 50 + 100;
+  return new Vector2D(x, y);
 };
 
 Device.prototype.drawPoint = function(vertex) {
   this.ctx.fillStyle = 'rgba(255,255,255,.7)';
-  this.ctx.beginPath();
-  this.ctx.arc(vertex.x, vertex.y, 2, 0, Math.PI * 2, false);
-  this.ctx.fill();
+  this.ctx.fillRect(vertex.x, vertex.y, 1, 1);
 };
 
 Device.prototype.Render = function(camera, meshes) {
@@ -65,34 +72,34 @@ Device.prototype.Render = function(camera, meshes) {
   // Loop through meshes
   for (let i = 0; i < meshes.length; i++) {
     let currentMesh = meshes[i];
-    let rotationMatrix = Matrix.rotationYPR(currentMesh.rotation.y, currentMesh.rotation.x, currentMesh.rotation.z);
-    let translationMatrix = Matrix.Translation(currentMesh.rotation.y, currentMesh.rotation.x, currentMesh.rotation.z);
-    let worldMatrix = rotationMatrix.multiply(translationMatrix);
+    let worldMatrix = Matrix.rotationYPR(currentMesh.rotation.y, currentMesh.rotation.x, currentMesh.rotation.z).multiply(Matrix.Translation(currentMesh.position.y, currentMesh.position.x, currentMesh.position.z));
+    // Final matrix to be applied to each vertex
     let transformMatrix = worldMatrix.multiply(viewMatrix).multiply(projectionMatrix);
     // Loop through vertices in each mesh
     for(let i = 0; i < currentMesh.vertices.length; i++) {
       let projectedPoint = this.Project(currentMesh.vertices[i], transformMatrix);
+      console.log('projected points', projectedPoint);
       this.drawPoint(projectedPoint);
     }
   }
 };
 
-let camera = new Camera();
-let device = new Device();
-let testShape = new Cube();
-let mesh = new Mesh(testShape);
 
 function init() {
+  camera = new Camera();
+  device = new Device();
+  let testShape = new Isosahedron();
+  mesh = new Mesh(testShape);
   meshes.push(mesh);
   requestAnimationFrame(drawingLoop);
 }
 init();
 
-// Rendering loop handler
+//Rendering loop handler
 function drawingLoop() {
   device.Clear();
   mesh.rotation.x += 0.01;
   mesh.rotation.y += 0.01;
   device.Render(camera, meshes);
-  requestAnimationFrame(drawingLoop);
+  //requestAnimationFrame(drawingLoop);
 }
