@@ -8,8 +8,7 @@ const $ = require('jquery');
 const Matrix = require('./particles/matrix.js');
 const Vector3D = require('./particles/vector3d.js');
 const Vector2D = require('./particles/vector2d.js');
-const Cube = require('./particles/cube.js');
-const Isosahedron = require('./particles/iso.js');
+const Icosahedron = require('./particles/platonic-solid-mesh.js');
 
 let meshes = [], camera, device, mesh, zValues = [];
 
@@ -88,7 +87,7 @@ Device.prototype.Render = function(camera, meshes) {
 function init() {
   camera = new Camera();
   device = new Device();
-  let testShape = new Isosahedron();
+  let testShape = new Icosahedron();
   mesh = new Mesh(testShape);
   meshes.push(mesh);
   requestAnimationFrame(drawingLoop);

@@ -2,13 +2,7 @@
 
 const Vector3D = require('./vector3d.js');
 
-const Face = function(vertex1, vertex2, vertex3) {
-  this.vertex1 = vertex1;
-  this.vertex2 = vertex2;
-  this.vertex3 = vertex3;
-};
-
-const Isosahedron = module.exports = function() {
+const Icosahedron = module.exports = function() {
   let r = 1;
   let f = (1 + Math.sqrt(5))/2;
   this.vertices = [
@@ -49,5 +43,33 @@ const Isosahedron = module.exports = function() {
     { A:2, B:7, C:8 },
     { A:3, B:8, C:9 },
     { A:4, B:9, C:10 },
+  ];
+};
+
+const Cube = module.exports =function() {
+  this.vertices = [
+    new Vector3D(-1, 1, 1),
+    new Vector3D(1, 1, 1),
+    new Vector3D(-1, -1, 1),
+    new Vector3D(-1, -1, -1),
+    new Vector3D(-1, 1, -1),
+    new Vector3D(1, 1, -1),
+    new Vector3D(1, -1, 1),
+    new Vector3D(1, -1, -1),
+  ];
+  this.faces = [
+    { A:0, B:1, C:2 },
+    { A:1, B:2, C:3 },
+    { A:1, B:3, C:6 },
+    { A:1, B:5, C:6 },
+    { A:0, B:1, C:4 },
+    { A:1, B:4, C:5 },
+
+    { A:2, B:3, C:7 },
+    { A:3, B:6, C:7 },
+    { A:0, B:2, C:7 },
+    { A:0, B:4, C:7 },
+    { A:4, B:5, C:6 },
+    { A:4, B:6, C:7 },
   ];
 };
