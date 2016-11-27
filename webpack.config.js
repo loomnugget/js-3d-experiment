@@ -28,10 +28,6 @@ module.exports = {
         exclude: /node_modules/,
         loader: 'babel',
       },
-      // {
-      //   test: /jquery[\\\/]src[\\\/]selector\.js$/,
-      //   loader: 'amd-define-factory-patcher-loader',
-      // },
 
       {
         test: /\.html$/,

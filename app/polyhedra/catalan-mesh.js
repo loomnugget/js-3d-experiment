@@ -1,6 +1,6 @@
 'use strict';
 
-const Vector3D = require('./vector3d.js');
+const Vector3D = require('../math/vector3d.js');
 
 const C0 = 5 * (7 + Math.sqrt(5)) / 44;
 const C1 = 5 * (3 + 2 * Math.sqrt(5)) / 22;

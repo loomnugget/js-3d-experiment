@@ -5,10 +5,10 @@ require('./scss/main.scss');
 const requestAnimationFrame = require('raf');
 const $ = require('jquery');
 
-const Matrix = require('./particles/matrix.js');
-const Vector3D = require('./particles/vector3d.js');
-const Vector2D = require('./particles/vector2d.js');
-const Icosahedron = require('./particles/platonic-solid-mesh.js');
+const Matrix = require('./math/matrix.js');
+const Vector3D = require('./math/vector3d.js');
+const Vector2D = require('./math/vector2d.js');
+const Icosahedron = require('./polyhedra/platonic-solid-mesh.js');
 
 let meshes = [], camera, device, mesh, zValues = [];
 
@@ -22,16 +22,6 @@ Mesh.prototype.sortByZIndex = function(a, b){
   return a.z - b.z;
 };
 
-Mesh.prototype.calcDepth = function(facesArray) {
-//Back ones are drawn first according to their average z-value
-//The larger the z-value, the closer the faces are to the viewer
-  let avgZ = 0;
-  for(var i = 0; i < facesArray.length; i++) { //loop through vertices of each face
-    avgZ += (facesArray[i].z); //add up z values for each vertex
-  }
-  avgZ/3; //divide by number of vertices in each face (3)
-  zValues.push(avgZ); //push value to new array
-};
 
 const Camera = function() {
   // Set up initial positions of the camera, the target, and up direction of the camera
@@ -77,12 +67,10 @@ Device.prototype.Render = function(camera, meshes) {
     // Loop through vertices in each mesh
     for(let i = 0; i < currentMesh.vertices.length; i++) {
       let projectedPoint = this.Project(currentMesh.vertices[i], transformMatrix);
-      console.log('projected points', projectedPoint);
       this.drawPoint(projectedPoint);
     }
   }
 };
-
 
 function init() {
   camera = new Camera();
