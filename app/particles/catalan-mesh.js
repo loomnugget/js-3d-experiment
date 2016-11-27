@@ -2,46 +2,46 @@
 
 const Vector3D = require('./vector3d.js');
 
-//Triakis Icosahedron
-const triakisIcosahedron = function() {
-  let C0 = 5 * (7 + Math.sqrt(5)) / 44;
-  let C1 = 5 * (3 + 2 * Math.sqrt(5)) / 22;
-  let C2 = (5 + Math.sqrt(5)) / 4;
-  let C3 = 5 * (13 + 5 * Math.sqrt(5)) / 44;
-  let C4 = (5 + 3 * Math.sqrt(5)) / 4;
+const C0 = 5 * (7 + Math.sqrt(5)) / 44;
+const C1 = 5 * (3 + 2 * Math.sqrt(5)) / 22;
+const C2 = (5 + Math.sqrt(5)) / 4;
+const C3 = 5 * (13 + 5 * Math.sqrt(5)) / 44;
+const C4 = (5 + 3 * Math.sqrt(5)) / 4;
 
+//Triakis Icosahedron
+const triakisIcosahedron = module.exports = function() {
   this.vertices = [
-    new Vector3D( C2, 0.0,  C4),
+    new Vector3D( C2, 0.0, C4),
     new Vector3D( C2, 0.0, -C4),
-    new Vector3D(-C2, 0.0,  C4),
+    new Vector3D(-C2, 0.0, C4),
     new Vector3D(-C2, 0.0, -C4),
-    new Vector3D( C4,  C2, 0.0),
+    new Vector3D( C4, C2, 0.0),
     new Vector3D( C4, -C2, 0.0),
-    new Vector3D(-C4,  C2, 0.0),
+    new Vector3D(-C4, C2, 0.0),
     new Vector3D(-C4, -C2, 0.0),
-    new Vector3D(0.0,  C4,  C2),
-    new Vector3D(0.0,  C4, -C2),
-    new Vector3D(0.0, -C4,  C2),
+    new Vector3D(0.0, C4, C2),
+    new Vector3D(0.0, C4, -C2),
+    new Vector3D(0.0, -C4, C2),
     new Vector3D(0.0, -C4, -C2),
-    new Vector3D(0.0,  C0,  C3),
-    new Vector3D(0.0,  C0, -C3),
-    new Vector3D(0.0, -C0,  C3),
+    new Vector3D(0.0, C0, C3),
+    new Vector3D(0.0, C0, -C3),
+    new Vector3D(0.0, -C0, C3),
     new Vector3D(0.0, -C0, -C3),
-    new Vector3D( C3, 0.0,  C0),
+    new Vector3D( C3, 0.0, C0),
     new Vector3D( C3, 0.0, -C0),
-    new Vector3D(-C3, 0.0,  C0),
+    new Vector3D(-C3, 0.0, C0),
     new Vector3D(-C3, 0.0, -C0),
-    new Vector3D( C0,  C3, 0.0),
+    new Vector3D( C0, C3, 0.0),
     new Vector3D( C0, -C3, 0.0),
-    new Vector3D(-C0,  C3, 0.0),
+    new Vector3D(-C0, C3, 0.0),
     new Vector3D(-C0, -C3, 0.0),
-    new Vector3D( C1,  C1,  C1),
-    new Vector3D( C1,  C1, -C1),
-    new Vector3D( C1, -C1,  C1),
+    new Vector3D( C1, C1, C1),
+    new Vector3D( C1, C1, -C1),
+    new Vector3D( C1, -C1, C1),
     new Vector3D( C1, -C1, -C1),
-    new Vector3D(-C1,  C1,  C1),
+    new Vector3D(-C1,  C1, C1),
     new Vector3D(-C1,  C1, -C1),
-    new Vector3D(-C1, -C1,  C1),
+    new Vector3D(-C1, -C1, C1),
     new Vector3D(-C1, -C1, -C1),
   ];
 
