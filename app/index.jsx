@@ -62,8 +62,8 @@ class App extends React.Component {
 
     Engine.prototype.Project = function(point, transformMatrix){
       let projected = Vector3D.transformCoordinates(point, transformMatrix);
-      let x = projected.x * canvas.width + canvas.width/2;
-      let y = -projected.y * canvas.height + canvas.height/2;
+      let x = projected.x * 2 * canvas.width + canvas.width/2;
+      let y = -projected.y * 2 * canvas.height + canvas.height/2;
       let z = point.z;
       return new Vector3D(x, y, z);
     };
@@ -75,7 +75,7 @@ class App extends React.Component {
 
     Engine.prototype.drawLines = function(vertex1, vertex2, vertex3, vertex4, vertex5) {
       ctx.beginPath();
-      ctx.strokeStyle = '#096';
+      ctx.strokeStyle = '#131313';
       ctx.moveTo(vertex1.x, vertex1.y); // pick up "pen," reposition
       ctx.lineTo(vertex2.x, vertex2.y); // draw line from vertex1 to vertex2
       ctx.lineTo(vertex3.x, vertex3.y); // draw line from vertex2 to vertex3
@@ -93,7 +93,6 @@ class App extends React.Component {
         let currentMesh = meshes[i];
         let worldMatrix = Matrix.rotationYPR(currentMesh.rotation.y, currentMesh.rotation.x, currentMesh.rotation.z).multiply(Matrix.Translation(currentMesh.position.y, currentMesh.position.x, currentMesh.position.z));
         // Final matrix to be applied to each vertex
-        console.log(currentMesh);
         let transformMatrix = worldMatrix.multiply(viewMatrix).multiply(projectionMatrix);
         // Loop through faces in each mesh
         for(let i = 0; i < currentMesh.faces.length; i++) {
