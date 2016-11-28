@@ -120,7 +120,11 @@ class App extends React.Component {
       console.log(testShape);
       mesh = new Mesh(testShape);
       meshes.push(mesh);
+<<<<<<< HEAD
       //requestAnimationFrame(drawingLoop);
+=======
+      requestAnimationFrame(drawingLoop);
+>>>>>>> b19706a49a51bf037e864f754f8c347c152532c9
     }
     init();
 

@@ -27,6 +27,14 @@ Vector3D.prototype.divide = function(v2) {
   return new Vector3D(this.x, this.y, this.z);
 };
 
+Vector3D.prototype.getMagnitude = function() {
+  return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+};
+
+Vector3D.prototype.getAngle = function() {
+  return Math.atan2(this.z, this.y, this.x);
+};
+
 Vector3D.prototype.length = function() {
   return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
 };
@@ -35,6 +43,11 @@ Vector3D.prototype.normalize = function() {
   let len = this.length();
   let ilen = 1/len;
   return new Vector3D(this.x*ilen, this.y*ilen, this.z*ilen);
+};
+
+//TODO: check this function
+Vector3D.fromAngle = function(angle, magnitude) {
+  return new Vector3D(magnitude * Math.cos(angle), magnitude * Math.sin(angle), magnitude);
 };
 
 Vector3D.Cross = function(v1, v2) {
