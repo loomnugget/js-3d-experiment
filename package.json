@@ -6,7 +6,7 @@
   "scripts": {
     "build": "./node_modules/webpack/bin/webpack.js",
     "watch": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot",
-    "build-watch": "./node_modules/webpack/bin/webpack.js -w",
+    "build-watch": "./node_modules/webpack/bin/webpack.js -w"
   },
   "keywords": [],
   "author": "Claudia Cedfeldt",
@@ -25,6 +25,6 @@
   },
 
   "devDependencies": {
-    "raf": "^3.3.0",
+    "raf": "^3.3.0"
   }
 }
