@@ -28,7 +28,11 @@ module.exports = {
         exclude: /node_modules/,
         loader: 'babel',
       },
-
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        loader: 'babel',
+      },
       {
         test: /\.html$/,
         loader: 'html',

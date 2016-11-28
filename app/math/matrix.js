@@ -6,8 +6,7 @@ const Matrix = module.exports = function() {
   this.m = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 };
 
-//THANK YOU BABYLON.js FOR THIS EQUATION THAT I DIDNT WANT TO TYPE MYSELF
-Matrix.prototype.multiply = function (other) {
+Matrix.prototype.multiply = function(other) {
   var result = new Matrix();
   result.m[0] = this.m[0] * other.m[0] + this.m[1] * other.m[4] + this.m[2] * other.m[8] + this.m[3] * other.m[12];
   result.m[1] = this.m[0] * other.m[1] + this.m[1] * other.m[5] + this.m[2] * other.m[9] + this.m[3] * other.m[13];

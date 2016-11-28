@@ -1,7 +1,5 @@
 'use strict';
 
-require('./scss/main.scss');
-
 const requestAnimationFrame = require('raf');
 const $ = require('jquery');
 
