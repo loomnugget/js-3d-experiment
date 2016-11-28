@@ -8,7 +8,7 @@ const requestAnimationFrame = require('raf');
 //App modules
 const Matrix = require('./math/matrix.js');
 const Vector3D = require('./math/vector3d.js');
-const Icosahedron = require('./polyhedra/platonic-solid-mesh.js');
+const stellation1 = require('./polyhedra/kepler-poinsot-mesh.js');
 
 class App extends React.Component {
   componentDidMount(){
@@ -62,8 +62,8 @@ class App extends React.Component {
 
     Engine.prototype.Project = function(point, transformMatrix){
       let projected = Vector3D.transformCoordinates(point, transformMatrix);
-      let x = projected.x * 50 + 100;
-      let y = -projected.y * 50 + 100;
+      let x = projected.x * canvas.width + canvas.width/2;
+      let y = -projected.y * canvas.height + canvas.height/2;
       let z = point.z;
       return new Vector3D(x, y, z);
     };
@@ -73,14 +73,16 @@ class App extends React.Component {
       ctx.fillRect(vertex.x, vertex.y, 1, 1);
     };
 
-    Engine.prototype.drawTriangle = function(vertex1, vertex2, vertex3) {
+    Engine.prototype.drawLines = function(vertex1, vertex2, vertex3, vertex4, vertex5) {
       ctx.beginPath();
       ctx.strokeStyle = '#096';
       ctx.moveTo(vertex1.x, vertex1.y); // pick up "pen," reposition
       ctx.lineTo(vertex2.x, vertex2.y); // draw line from vertex1 to vertex2
       ctx.lineTo(vertex3.x, vertex3.y); // draw line from vertex2 to vertex3
+      ctx.lineTo(vertex4.x, vertex4.y);
+      ctx.lineTo(vertex5.x, vertex5.y);
       ctx.closePath(); // connect end to start
-      ctx.stroke(); // outline the triangle
+      ctx.stroke(); // outline the shape
     };
 
     Engine.prototype.Render = function(camera, meshes) {
@@ -100,14 +102,18 @@ class App extends React.Component {
           let vertexA = currentMesh.vertices[face.A];
           let vertexB = currentMesh.vertices[face.B];
           let vertexC = currentMesh.vertices[face.C];
+          let vertexD = currentMesh.vertices[face.D];
+          let vertexE = currentMesh.vertices[face.E];
 
           // Project each vertex in the face by applying transformation matrix to all points
           let projectedVertexA = this.Project(vertexA, transformMatrix);
           let projectedVertexB = this.Project(vertexB, transformMatrix);
           let projectedVertexC = this.Project(vertexC, transformMatrix);
+          let projectedVertexD = this.Project(vertexD, transformMatrix);
+          let projectedVertexE = this.Project(vertexE, transformMatrix);
 
           //Draw Triangles
-          this.drawTriangle(projectedVertexA, projectedVertexB, projectedVertexC);
+          this.drawLines(projectedVertexA, projectedVertexB, projectedVertexC, projectedVertexD, projectedVertexE);
         }
       }
     };
@@ -116,11 +122,12 @@ class App extends React.Component {
     function init() {
       camera = new Camera();
       engine = new Engine();
-      let testShape = new Icosahedron();
+      let testShape = new stellation1();
       console.log(testShape);
       mesh = new Mesh(testShape);
       meshes.push(mesh);
       requestAnimationFrame(drawingLoop);
+
     }
     init();
 
