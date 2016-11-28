@@ -1,6 +1,6 @@
 'use strict';
 
-const Vector3D = require('./vector3d.js');
+const Vector3D = require('../math/vector3d.js');
 
 // Icosahedron
 const Icosahedron = module.exports = function() {
