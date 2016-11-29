@@ -24,10 +24,17 @@ class App extends React.Component {
     const Mesh = function(shape) {
       this.vertices = shape.vertices;
       this.faces = shape.faces;
+      this.avgZ = [];
       this.rotation = new Vector3D(45,45,45);
       this.position = new Vector3D(0,0,0);
       this.velocity = new Vector3D(0,0,0);
       this.acceleration = new Vector3D(0,0,0);
+    };
+
+    Mesh.prototype.getAvgZ = function(face){
+
+      this.sum = face.z + v2.z + v3.z + v4.z + v5.z;
+      this.avgZ.push(this.sum/5);
     };
 
     Mesh.prototype.Move = function() {
@@ -35,13 +42,8 @@ class App extends React.Component {
       this.position.add(this.velocity);
     };
 
-    Mesh.prototype.getAvgZ = function(v1, v2, v3){
-      let sum = v1.z + v2.z + v3.z;
-      avgZ.push(sum/3);
-      return avgZ;
-    };
 
-    Mesh.prototype.sortByZIndex = function(a, b){
+    function sortByZIndex(a, b){
       return a.z - b.z;
     };
 
@@ -91,6 +93,7 @@ class App extends React.Component {
       // Loop through meshes
       for (let i = 0; i < meshes.length; i++) {
         let currentMesh = meshes[i];
+
         let worldMatrix = Matrix.rotationYPR(currentMesh.rotation.y, currentMesh.rotation.x, currentMesh.rotation.z).multiply(Matrix.Translation(currentMesh.position.y, currentMesh.position.x, currentMesh.position.z));
         // Final matrix to be applied to each vertex
         let transformMatrix = worldMatrix.multiply(viewMatrix).multiply(projectionMatrix);
@@ -111,6 +114,8 @@ class App extends React.Component {
           let projectedVertexD = this.Project(vertexD, transformMatrix);
           let projectedVertexE = this.Project(vertexE, transformMatrix);
 
+          //face.getAvgZ(projectedVertexA, projectedVertexB, projectedVertexC, projectedVertexD, projectedVertexE);
+          //console.log(currentMesh.avgZ);
           //Draw Triangles
           this.drawLines(projectedVertexA, projectedVertexB, projectedVertexC, projectedVertexD, projectedVertexE);
         }
@@ -122,7 +127,6 @@ class App extends React.Component {
       camera = new Camera();
       engine = new Engine();
       let testShape = new stellation1();
-      console.log(testShape);
       mesh = new Mesh(testShape);
       meshes.push(mesh);
       requestAnimationFrame(drawingLoop);
