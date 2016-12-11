@@ -14,12 +14,15 @@
     "mocha": true,
     "jasmine": true
   },
+  "plugins": ["react"],
   "globals": {
   },
   "ecmaFeatures": {
     "modules": true,
     "experimentalObjectRestSpread": true,
-    "impliedStrict": true
+    "impliedStrict": true,
+    "templateStrings": true,
+    "jsx": true
   },
   "extends": "eslint:recommended"
 }
