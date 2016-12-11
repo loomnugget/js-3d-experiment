@@ -32,16 +32,9 @@ class App extends React.Component {
     };
 
     Mesh.prototype.getAvgZ = function(face){
-
       this.sum = face.z + v2.z + v3.z + v4.z + v5.z;
       this.avgZ.push(this.sum/5);
     };
-
-    Mesh.prototype.Move = function() {
-      this.velocity.add(this.acceleration);
-      this.position.add(this.velocity);
-    };
-
 
     function sortByZIndex(a, b){
       return a.z - b.z;
@@ -145,7 +138,7 @@ class App extends React.Component {
   }
 
   render() {
-    return <canvas ref="canvas"/>;
+    return <canvas ref="canvas"></canvas>;
   }
 }
 render(<App/>, document.getElementById('app'));
