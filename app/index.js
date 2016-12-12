@@ -140,7 +140,7 @@ var displayCanvas = React.createClass({
 
   render: function() {
     return (
-      <canvas ref="displayCanvas"></canvas>
+      <canvas ref="Canvas"></canvas>
     )
   },
 });
@@ -153,4 +153,4 @@ var Hello = React.createClass({
   },
 });
 //2 arguments - first element you want to render, and where you render it to
-ReactDOM.render(<displayCanvas/>, document.getElementById('app'));
+ReactDOM.render(<displayCanvas />, document.getElementById('app'));

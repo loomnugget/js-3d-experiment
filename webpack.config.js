@@ -25,18 +25,17 @@ module.exports = {
       {
         test : /\.jsx?/,
         include : `${__dirname}/app`,
-        exclude: /node_modules/,
         loader : 'babel',
         query:
           {
             presets:['react']
           }
       },
-      // {
-      //   test: /\.js$/,
-      //   exclude: /node_modules/,
-      //   loader: 'babel'
-      // },
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: 'babel'
+      },
       {
         test: /\.html$/,
         loader: 'html',
