@@ -9,9 +9,14 @@
 body, html{
    width: 100%;
    height: 100%;
+   background-color: $app-darkgrey;
 }
 
 canvas {
    background-color: $app-darkgrey;
    width: 100%;
+}
+
+h1 {
+  color: $app-white;
 }

@@ -2,7 +2,7 @@
 
 // NPM modules
 const React = require('react');
-const render = require('react-dom').render;
+const ReactDOM = require('react-dom');
 const requestAnimationFrame = require('raf');
 
 //App modules
@@ -14,36 +14,25 @@ class App extends React.Component {
   componentDidMount(){
     this.updateCanvas();
   }
-
   updateCanvas() {
     const canvas = this.refs.canvas;
     const ctx = this.refs.canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.width = 1000;
+    canvas.height = 1000;
 
     const Mesh = function(shape) {
       this.vertices = shape.vertices;
       this.faces = shape.faces;
+      this.avgZ = [];
       this.rotation = new Vector3D(45,45,45);
       this.position = new Vector3D(0,0,0);
       this.velocity = new Vector3D(0,0,0);
       this.acceleration = new Vector3D(0,0,0);
     };
 
-    Mesh.prototype.Move = function() {
-      this.velocity.add(this.acceleration);
-      this.position.add(this.velocity);
-    };
-
-    Mesh.prototype.getAvgZ = function(v1, v2, v3){
-      let sum = v1.z + v2.z + v3.z;
-      avgZ.push(sum/3);
-      return avgZ;
-    };
-
-    Mesh.prototype.sortByZIndex = function(a, b){
+    function sortByZIndex(a, b){
       return a.z - b.z;
-    };
+    }
 
     const Camera = function() {
       this.position = new Vector3D(0, 0, 10);
@@ -91,6 +80,7 @@ class App extends React.Component {
       // Loop through meshes
       for (let i = 0; i < meshes.length; i++) {
         let currentMesh = meshes[i];
+
         let worldMatrix = Matrix.rotationYPR(currentMesh.rotation.y, currentMesh.rotation.x, currentMesh.rotation.z).multiply(Matrix.Translation(currentMesh.position.y, currentMesh.position.x, currentMesh.position.z));
         // Final matrix to be applied to each vertex
         let transformMatrix = worldMatrix.multiply(viewMatrix).multiply(projectionMatrix);
@@ -111,6 +101,8 @@ class App extends React.Component {
           let projectedVertexD = this.Project(vertexD, transformMatrix);
           let projectedVertexE = this.Project(vertexE, transformMatrix);
 
+          //face.getAvgZ(projectedVertexA, projectedVertexB, projectedVertexC, projectedVertexD, projectedVertexE);
+          //console.log(currentMesh.avgZ);
           //Draw Triangles
           this.drawLines(projectedVertexA, projectedVertexB, projectedVertexC, projectedVertexD, projectedVertexE);
         }
@@ -122,7 +114,6 @@ class App extends React.Component {
       camera = new Camera();
       engine = new Engine();
       let testShape = new stellation1();
-      console.log(testShape);
       mesh = new Mesh(testShape);
       meshes.push(mesh);
       requestAnimationFrame(drawingLoop);
@@ -141,7 +132,22 @@ class App extends React.Component {
   }
 
   render() {
-    return <canvas ref="canvas"/>;
+    return <div>
+      <Hello title="Claudia" />
+      <canvas ref="canvas"></canvas>
+    </div>;
   }
 }
-render(<App/>, document.getElementById('app'));
+
+var Hello = React.createClass({
+  propTypes: {
+    title: React.PropTypes.string.isRequired,
+  },
+  render: function() {
+    return(
+      <h1> Hello, {this.props.title}</h1>
+    );
+  },
+});
+//2 arguments - first element you want to render, and where you render it to
+ReactDOM.render(<App />, document.getElementById('app'));

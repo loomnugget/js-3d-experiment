@@ -8,18 +8,21 @@
     "linebreak-style": [ "error", "unix" ],
     "no-unused-vars": 0
   },
+  "parser": "babel-eslint",
   "env": {
     "es6": true,
     "node": true,
     "mocha": true,
     "jasmine": true
   },
-  "globals": {
-  },
+  "plugins":
+    ["react"],
   "ecmaFeatures": {
     "modules": true,
     "experimentalObjectRestSpread": true,
-    "impliedStrict": true
+    "impliedStrict": true,
+    "templateStrings": true,
+    "jsx": true,
   },
-  "extends": "eslint:recommended"
+  "extends": ["eslint:recommended", "plugin:react/recommended"]
 }

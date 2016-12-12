@@ -1,8 +1,21 @@
-$app-black : #000;
-$app-white : #fff;
-$app-darkgrey: #131313;
-$app-red: #ff6666;
-$app-bg: #2a2a2a;
-$app-color: #eee8f3;
-$button-bg: rgba(255, 255, 255, .4);
+@import url('https://fonts.googleapis.com/css?family=Lato:100,300,400|Open+Sans:300');
+
+$app-primary: #b55bff;
+$app-secondary:#23bbe9;
+$app-tertiary: #26A69A;
+
+$app-disabled: #a2a2a2;
+$app-active: #fa7fa7;
+
+$app-success: #00b500;
+$app-error: #b50000;
+
+$app-warn: #b55555;
+$app-info: #55b555;
+
+$app-white: #fff;
+$app-black: #363636;
+$app-nav: #2a2a2a;
+$nav-active: #505050;
+
 $app-font: 'Lato', sans-serif;
