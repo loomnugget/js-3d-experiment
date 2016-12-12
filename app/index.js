@@ -1,5 +1,6 @@
 'use strict';
 
+require('./scss/main.scss');
 // NPM modules
 const React = require('react');
 const ReactDOM = require('react-dom');
@@ -11,6 +12,9 @@ const Vector3D = require('./math/vector3d.js');
 const stellation1 = require('./polyhedra/kepler-poinsot-mesh.js');
 
 class App extends React.Component {
+  propTypes: {
+    color: React.PropTypes.string.isRequired,
+  }
   componentDidMount(){
     this.updateCanvas();
   }
@@ -134,7 +138,7 @@ class App extends React.Component {
   render() {
     return <div>
       <Hello title="Claudia" />
-      <canvas ref="canvas"></canvas>
+      <canvas ref="canvas" onClick =""></canvas>
     </div>;
   }
 }

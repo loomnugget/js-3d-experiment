@@ -27,14 +27,14 @@ module.exports = {
         include : `${__dirname}/app`,
         loader : 'babel',
         query:
-          {
-            presets:['react']
-          }
+        {
+          presets:['react'],
+        },
       },
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel'
+        loader: 'babel',
       },
       {
         test: /\.html$/,
