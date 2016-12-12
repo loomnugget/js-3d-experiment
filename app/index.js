@@ -10,17 +10,15 @@ const Matrix = require('./math/matrix.js');
 const Vector3D = require('./math/vector3d.js');
 const stellation1 = require('./polyhedra/kepler-poinsot-mesh.js');
 
-
-var displayCanvas = React.createClass({
-  componentDidMount: function(){
+class App extends React.Component {
+  componentDidMount(){
     this.updateCanvas();
-  },
-
-  updateCanvas: function() {
+  }
+  updateCanvas() {
     const canvas = this.refs.canvas;
     const ctx = this.refs.canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.width = 1000;
+    canvas.height = 1000;
 
     const Mesh = function(shape) {
       this.vertices = shape.vertices;
@@ -32,14 +30,9 @@ var displayCanvas = React.createClass({
       this.acceleration = new Vector3D(0,0,0);
     };
 
-    Mesh.prototype.getAvgZ = function(face){
-      this.sum = face.z + v2.z + v3.z + v4.z + v5.z;
-      this.avgZ.push(this.sum/5);
-    };
-
     function sortByZIndex(a, b){
       return a.z - b.z;
-    };
+    }
 
     const Camera = function() {
       this.position = new Vector3D(0, 0, 10);
@@ -136,21 +129,25 @@ var displayCanvas = React.createClass({
       engine.Render(camera, meshes);
       requestAnimationFrame(drawingLoop);
     }
-  },
+  }
 
-  render: function() {
-    return (
-      <canvas ref="Canvas"></canvas>
-    )
-  },
-});
+  render() {
+    return <div>
+      <Hello title="Claudia" />
+      <canvas ref="canvas"></canvas>
+    </div>;
+  }
+}
 
 var Hello = React.createClass({
+  propTypes: {
+    title: React.PropTypes.string.isRequired,
+  },
   render: function() {
     return(
-      <h1> Hello, {this.props.name}</h1>
-    )
+      <h1> Hello, {this.props.title}</h1>
+    );
   },
 });
 //2 arguments - first element you want to render, and where you render it to
-ReactDOM.render(<displayCanvas />, document.getElementById('app'));
+ReactDOM.render(<App />, document.getElementById('app'));
