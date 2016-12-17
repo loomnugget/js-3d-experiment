@@ -10,6 +10,7 @@ const requestAnimationFrame = require('raf');
 const Matrix = require('./math/matrix.js');
 const Vector3D = require('./math/vector3d.js');
 const stellation1 = require('./polyhedra/kepler-poinsot-mesh.js');
+const triakisIcosahedron = require('./polyhedra/catalan-mesh.js');
 
 
 class App extends React.Component {
@@ -31,10 +32,6 @@ class App extends React.Component {
       this.velocity = new Vector3D(0,0,0);
       this.acceleration = new Vector3D(0,0,0);
     };
-    //Returns average depth for each face based on Z-coord of vertices
-    function getAvgZ(v1, v2, v3, v4, v5){
-      return (v1 + v2 + v3 + v4 + v5)/5;
-    }
 
     const Camera = function() {
       this.position = new Vector3D(0, 0, 10);
@@ -53,8 +50,8 @@ class App extends React.Component {
 
     Engine.prototype.Project = function(point, transformMatrix){
       let projected = Vector3D.transformCoordinates(point, transformMatrix);
-      let x = projected.x * 2 * canvas.width + canvas.width/2;
-      let y = -projected.y * 2 * canvas.height + canvas.height/2;
+      let x = projected.x * canvas.width/2 + canvas.width/2;
+      let y = -projected.y * canvas.height/2 + canvas.height/2;
       let z = point.z;
       return new Vector3D(x, y, z);
     };
@@ -64,58 +61,71 @@ class App extends React.Component {
       ctx.fillRect(vertex.x, vertex.y, 1, 1);
     };
 
-    Engine.prototype.drawLines = function(vertex1, vertex2, vertex3, vertex4, vertex5) {
+    Engine.prototype.drawLines = function(vertex1, vertex2, vertex3) {
       ctx.beginPath();
       ctx.strokeStyle = this.strokeStyle;
       ctx.moveTo(vertex1.x, vertex1.y); // pick up "pen," reposition
       ctx.lineTo(vertex2.x, vertex2.y); // draw line from vertex1 to vertex2
       ctx.lineTo(vertex3.x, vertex3.y); // draw line from vertex2 to vertex3
-      ctx.lineTo(vertex4.x, vertex4.y);
-      ctx.lineTo(vertex5.x, vertex5.y);
       ctx.closePath(); // connect end to start
       ctx.stroke(); // outline the shape
     };
 
+    Engine.prototype.AvgZ = function(sortedFaces) {
+      let avgZ = (sortedFaces.vertexA.z + sortedFaces.vertexB.z + sortedFaces.vertexC.z)/3;
+      sortedFaces['avgZ'] = avgZ;
+    };
+
+    let sortedFaces = {}, sortedFacesArr = [];
+
     Engine.prototype.Render = function(camera, meshes) {
       let viewMatrix = Matrix.LookAtLH(camera.position, camera.target, camera.up);
-      let projectionMatrix = Matrix.PerspectiveFovLH(0.78, canvas.width/canvas.height, .01, 1.0);
+      let projectionMatrix = Matrix.PerspectiveFovLH(.78, canvas.width/canvas.height, .01, 1.0);
       // Loop through meshes
       for (let i = 0; i < meshes.length; i++) {
         let currentMesh = meshes[i];
-
         let worldMatrix = Matrix.rotationYPR(currentMesh.rotation.y, currentMesh.rotation.x, currentMesh.rotation.z).multiply(Matrix.Translation(currentMesh.position.y, currentMesh.position.x, currentMesh.position.z));
         // Final matrix to be applied to each vertex
         let transformMatrix = worldMatrix.multiply(viewMatrix).multiply(projectionMatrix);
         // Loop through faces in each mesh
         for(let i = 0; i < currentMesh.faces.length; i++) {
           let face = currentMesh.faces[i];
-          // Create each triangular face using indexes from faces array
+
+          // Create each triangular face using indices from faces array
           let vertexA = currentMesh.vertices[face.A];
           let vertexB = currentMesh.vertices[face.B];
           let vertexC = currentMesh.vertices[face.C];
-          let vertexD = currentMesh.vertices[face.D];
-          let vertexE = currentMesh.vertices[face.E];
+          sortedFaces['vertexA'] = vertexA;
+          sortedFaces['vertexB'] = vertexB;
+          sortedFaces['vertexC'] = vertexC;
+
+          this.AvgZ(sortedFaces);
+          sortedFacesArr.push(sortedFaces);
+          console.log(sortedFacesArr);
+          // var sorted = sortedFaces.slice(0);
+          // sortedFaces.sort(function(a,b) {
+          //   return a.born - b.born;
+          // });
+          // console.log(sorted);
+          //console.log(sortedFaces);
 
           // Project each vertex in the face by applying transformation matrix to all points
           let projectedVertexA = this.Project(vertexA, transformMatrix);
           let projectedVertexB = this.Project(vertexB, transformMatrix);
           let projectedVertexC = this.Project(vertexC, transformMatrix);
-          let projectedVertexD = this.Project(vertexD, transformMatrix);
-          let projectedVertexE = this.Project(vertexE, transformMatrix);
 
-          let z = getAvgZ(projectedVertexA.z, projectedVertexB.z, projectedVertexC.z, projectedVertexD.z, projectedVertexE.z);
-          console.log(z);
+
           //Draw Triangles
-          this.drawLines(projectedVertexA, projectedVertexB, projectedVertexC, projectedVertexD, projectedVertexE);
+          this.drawLines(projectedVertexA, projectedVertexB, projectedVertexC);
         }
       }
     };
 
-    let meshes = [], camera, engine, mesh, avgZ = [];
+    let meshes = [], camera, engine, mesh;
     function init() {
       camera = new Camera();
       engine = new Engine();
-      let testShape = new stellation1();
+      let testShape = new triakisIcosahedron();
       mesh = new Mesh(testShape);
       meshes.push(mesh);
       requestAnimationFrame(drawingLoop);
@@ -129,7 +139,7 @@ class App extends React.Component {
       mesh.rotation.x += 0.01;
       mesh.rotation.y += 0.01;
       engine.Render(camera, meshes);
-      requestAnimationFrame(drawingLoop);
+      //requestAnimationFrame(drawingLoop);
     }
   }
   constructor() {
