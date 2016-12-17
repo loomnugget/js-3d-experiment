@@ -11,10 +11,8 @@ const Matrix = require('./math/matrix.js');
 const Vector3D = require('./math/vector3d.js');
 const stellation1 = require('./polyhedra/kepler-poinsot-mesh.js');
 
+
 class App extends React.Component {
-  propTypes: {
-    color: React.PropTypes.string.isRequired,
-  }
   componentDidMount(){
     this.updateCanvas();
   }
@@ -33,9 +31,9 @@ class App extends React.Component {
       this.velocity = new Vector3D(0,0,0);
       this.acceleration = new Vector3D(0,0,0);
     };
-
-    function sortByZIndex(a, b){
-      return a.z - b.z;
+    //Returns average depth for each face based on Z-coord of vertices
+    function getAvgZ(v1, v2, v3, v4, v5){
+      return (v1 + v2 + v3 + v4 + v5)/5;
     }
 
     const Camera = function() {
@@ -68,7 +66,7 @@ class App extends React.Component {
 
     Engine.prototype.drawLines = function(vertex1, vertex2, vertex3, vertex4, vertex5) {
       ctx.beginPath();
-      ctx.strokeStyle = '#131313';
+      ctx.strokeStyle = this.strokeStyle;
       ctx.moveTo(vertex1.x, vertex1.y); // pick up "pen," reposition
       ctx.lineTo(vertex2.x, vertex2.y); // draw line from vertex1 to vertex2
       ctx.lineTo(vertex3.x, vertex3.y); // draw line from vertex2 to vertex3
@@ -105,8 +103,8 @@ class App extends React.Component {
           let projectedVertexD = this.Project(vertexD, transformMatrix);
           let projectedVertexE = this.Project(vertexE, transformMatrix);
 
-          //face.getAvgZ(projectedVertexA, projectedVertexB, projectedVertexC, projectedVertexD, projectedVertexE);
-          //console.log(currentMesh.avgZ);
+          let z = getAvgZ(projectedVertexA.z, projectedVertexB.z, projectedVertexC.z, projectedVertexD.z, projectedVertexE.z);
+          console.log(z);
           //Draw Triangles
           this.drawLines(projectedVertexA, projectedVertexB, projectedVertexC, projectedVertexD, projectedVertexE);
         }
@@ -134,22 +132,31 @@ class App extends React.Component {
       requestAnimationFrame(drawingLoop);
     }
   }
+  constructor() {
+    super();
+    this.state = {
+      style: divStyle,
+    };
+    this.strokeStyle = '#ffaafa';
 
+  }
   render() {
     return <div>
-      <Hello title="Claudia" />
-      <canvas ref="canvas" onClick =""></canvas>
+      <Hello />
+      <canvas ref="canvas" style={this.state.style}></canvas>
     </div>;
   }
 }
 
+const divStyle =  {
+  color: '#131313',
+  background:'#fff',
+};
+
 var Hello = React.createClass({
-  propTypes: {
-    title: React.PropTypes.string.isRequired,
-  },
   render: function() {
-    return(
-      <h1> Hello, {this.props.title}</h1>
+    return (
+      <h1 style={divStyle} >Hello</h1>
     );
   },
 });
