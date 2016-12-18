@@ -57,8 +57,8 @@ class App extends React.Component {
     };
 
     Engine.prototype.drawPoint = function(vertex) {
-      ctx.fillStyle = 'rgba(255,255,255,.7)';
-      ctx.fillRect(vertex.x, vertex.y, 1, 1);
+      ctx.fillStyle = 'rgba(0, 0, 0, 1)';
+      ctx.fillRect(vertex.x, vertex.y, 3, 3);
     };
 
     Engine.prototype.drawLines = function(vertex1, vertex2, vertex3) {
@@ -71,12 +71,24 @@ class App extends React.Component {
       ctx.stroke(); // outline the shape
     };
 
-    Engine.prototype.AvgZ = function(sortedFaces) {
-      let avgZ = (sortedFaces.vertexA.z + sortedFaces.vertexB.z + sortedFaces.vertexC.z)/3;
-      sortedFaces['avgZ'] = avgZ;
+    Engine.prototype.getDepths = function(verticesArray) {
+      for(var i = 0; i < verticesArray.length; i++){
+        depths[i] = verticesArray[i].z;
+      }
     };
 
-    let sortedFaces = {}, sortedFacesArr = [];
+    // Calculate Painter's Algorithm
+    Engine.prototype.avgDepth = function(faceArray) {
+      for(var i = 0; i < faceArray.length; i++){
+        // Sum and average
+        avgFaceDepth[i] = depths[faceArray[i].A];
+        avgFaceDepth[i] += depths[faceArray[i].B];
+        avgFaceDepth[i] += depths[faceArray[i].C];
+        avgFaceDepth[i] /= 3;
+      }
+    };
+
+    var depths = [], avgFaceDepth = [];
 
     Engine.prototype.Render = function(camera, meshes) {
       let viewMatrix = Matrix.LookAtLH(camera.position, camera.target, camera.up);
@@ -87,37 +99,32 @@ class App extends React.Component {
         let worldMatrix = Matrix.rotationYPR(currentMesh.rotation.y, currentMesh.rotation.x, currentMesh.rotation.z).multiply(Matrix.Translation(currentMesh.position.y, currentMesh.position.x, currentMesh.position.z));
         // Final matrix to be applied to each vertex
         let transformMatrix = worldMatrix.multiply(viewMatrix).multiply(projectionMatrix);
-        // Loop through faces in each mesh
-        for(let i = 0; i < currentMesh.faces.length; i++) {
-          let face = currentMesh.faces[i];
+        // Loop through vertices in each mesh to apply changes
+        this.getDepths(currentMesh.vertices);
+        this.avgDepth(currentMesh.faces);
+        currentMesh.faces.sort(function(a, b){
+          return b - a;
+        });
+        this.drawProjection(currentMesh, transformMatrix);
+      }
+    };
 
-          // Create each triangular face using indices from faces array
-          let vertexA = currentMesh.vertices[face.A];
-          let vertexB = currentMesh.vertices[face.B];
-          let vertexC = currentMesh.vertices[face.C];
-          sortedFaces['vertexA'] = vertexA;
-          sortedFaces['vertexB'] = vertexB;
-          sortedFaces['vertexC'] = vertexC;
+    Engine.prototype.drawProjection = function(currentMesh, transformMatrix) {
+      for(let i = 0; i < currentMesh.faces.length; i++) {
+        let face = currentMesh.faces[i];
 
-          this.AvgZ(sortedFaces);
-          sortedFacesArr.push(sortedFaces);
-          console.log(sortedFacesArr);
-          // var sorted = sortedFaces.slice(0);
-          // sortedFaces.sort(function(a,b) {
-          //   return a.born - b.born;
-          // });
-          // console.log(sorted);
-          //console.log(sortedFaces);
+        // Create each triangular face using indices from faces array
+        let vertexA = currentMesh.vertices[face.A];
+        let vertexB = currentMesh.vertices[face.B];
+        let vertexC = currentMesh.vertices[face.C];
 
-          // Project each vertex in the face by applying transformation matrix to all points
-          let projectedVertexA = this.Project(vertexA, transformMatrix);
-          let projectedVertexB = this.Project(vertexB, transformMatrix);
-          let projectedVertexC = this.Project(vertexC, transformMatrix);
+        // Project each vertex in the face by applying transformation matrix to all points
+        let projectedVertexA = this.Project(vertexA, transformMatrix);
+        let projectedVertexB = this.Project(vertexB, transformMatrix);
+        let projectedVertexC = this.Project(vertexC, transformMatrix);
 
-
-          //Draw Triangles
-          this.drawLines(projectedVertexA, projectedVertexB, projectedVertexC);
-        }
+        //Draw Triangles
+        this.drawLines(projectedVertexA, projectedVertexB, projectedVertexC);
       }
     };
 
