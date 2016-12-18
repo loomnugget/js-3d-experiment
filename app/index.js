@@ -81,10 +81,17 @@ class App extends React.Component {
     Engine.prototype.avgDepth = function(faceArray) {
       for(var i = 0; i < faceArray.length; i++){
         // Sum and average
-        avgFaceDepth[i] = depths[faceArray[i].A];
-        avgFaceDepth[i] += depths[faceArray[i].B];
-        avgFaceDepth[i] += depths[faceArray[i].C];
-        avgFaceDepth[i] /= 3;
+        faceArray[i]['avgZ'] = (depths[faceArray[i].A] + depths[faceArray[i].B] + depths[faceArray[i].C])/3;
+        console.log(faceArray[i]);
+      }
+    };
+
+    Engine.prototype.sortByDepths = function(faceArray) {
+      for(var i = 0; i < faceArray.length; i++){
+        faceArray.sort(function(a, b){
+          return b.avgZ - a.avgZ;
+        });
+        console.log(faceArray[i]);
       }
     };
 
@@ -102,9 +109,7 @@ class App extends React.Component {
         // Loop through vertices in each mesh to apply changes
         this.getDepths(currentMesh.vertices);
         this.avgDepth(currentMesh.faces);
-        currentMesh.faces.sort(function(a, b){
-          return b - a;
-        });
+        this.sortByDepths(currentMesh.faces);
         this.drawProjection(currentMesh, transformMatrix);
       }
     };
@@ -112,7 +117,6 @@ class App extends React.Component {
     Engine.prototype.drawProjection = function(currentMesh, transformMatrix) {
       for(let i = 0; i < currentMesh.faces.length; i++) {
         let face = currentMesh.faces[i];
-
         // Create each triangular face using indices from faces array
         let vertexA = currentMesh.vertices[face.A];
         let vertexB = currentMesh.vertices[face.B];
