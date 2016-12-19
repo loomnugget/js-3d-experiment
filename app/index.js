@@ -48,12 +48,11 @@ class App extends React.Component {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     };
 
-    Engine.prototype.Project = function(point, transformMatrix){
-      let projected = Vector3D.transformCoordinates(point, transformMatrix);
-      let x = projected.x * canvas.width/2 + canvas.width/2;
-      let y = -projected.y * canvas.height/2 + canvas.height/2;
-      let z = point.z;
-      return new Vector3D(x, y, z);
+    Engine.prototype.Project = function(vertex, transformMatrix){
+      let projected = Vector3D.transformCoordinates(vertex, transformMatrix);
+      vertex.x = projected.x * canvas.width/2 + canvas.width/2;
+      vertex.y = -projected.y * canvas.height/2 + canvas.height/2;
+      vertex.z = vertex.z;
     };
 
     Engine.prototype.drawPoint = function(vertex) {
@@ -69,6 +68,8 @@ class App extends React.Component {
       ctx.lineTo(vertex3.x, vertex3.y); // draw line from vertex2 to vertex3
       ctx.closePath(); // connect end to start
       ctx.stroke(); // outline the shape
+      ctx.fillStyle = '#ffaafa';
+      ctx.fill();
     };
 
     Engine.prototype.getDepths = function(verticesArray) {
@@ -80,9 +81,9 @@ class App extends React.Component {
     // Calculate Painter's Algorithm
     Engine.prototype.avgDepth = function(faceArray) {
       for(var i = 0; i < faceArray.length; i++){
-        // Sum and average
+        // Find average of depths for each face by using z-value for each vertex
         faceArray[i]['avgZ'] = (depths[faceArray[i].A] + depths[faceArray[i].B] + depths[faceArray[i].C])/3;
-        console.log(faceArray[i]);
+        //console.log(faceArray[i]);
       }
     };
 
@@ -91,7 +92,7 @@ class App extends React.Component {
         faceArray.sort(function(a, b){
           return b.avgZ - a.avgZ;
         });
-        console.log(faceArray[i]);
+        //console.log(faceArray[i]);
       }
     };
 
@@ -106,7 +107,6 @@ class App extends React.Component {
         let worldMatrix = Matrix.rotationYPR(currentMesh.rotation.y, currentMesh.rotation.x, currentMesh.rotation.z).multiply(Matrix.Translation(currentMesh.position.y, currentMesh.position.x, currentMesh.position.z));
         // Final matrix to be applied to each vertex
         let transformMatrix = worldMatrix.multiply(viewMatrix).multiply(projectionMatrix);
-        // Loop through vertices in each mesh to apply changes
         this.getDepths(currentMesh.vertices);
         this.avgDepth(currentMesh.faces);
         this.sortByDepths(currentMesh.faces);
@@ -115,14 +115,14 @@ class App extends React.Component {
     };
 
     Engine.prototype.drawProjection = function(currentMesh, transformMatrix) {
-      for(let i = 0; i < currentMesh.faces.length; i++) {
+      for(var i = 0; i < currentMesh.faces.length; i++) {
         let face = currentMesh.faces[i];
         // Create each triangular face using indices from faces array
         let vertexA = currentMesh.vertices[face.A];
         let vertexB = currentMesh.vertices[face.B];
         let vertexC = currentMesh.vertices[face.C];
 
-        // Project each vertex in the face by applying transformation matrix to all points
+        //Project each vertex in the face by applying transformation matrix to all points
         let projectedVertexA = this.Project(vertexA, transformMatrix);
         let projectedVertexB = this.Project(vertexB, transformMatrix);
         let projectedVertexC = this.Project(vertexC, transformMatrix);
@@ -150,7 +150,7 @@ class App extends React.Component {
       mesh.rotation.x += 0.01;
       mesh.rotation.y += 0.01;
       engine.Render(camera, meshes);
-      //requestAnimationFrame(drawingLoop);
+    //  requestAnimationFrame(drawingLoop);
     }
   }
   constructor() {
