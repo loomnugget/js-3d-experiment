@@ -1,7 +1,7 @@
 # 3D Physics Engine
 
 ## Summary
-This project is a 3D engine from scrach, inspired by a desire to undertand how beautiful UI elements and particle effects were created. My main goal was to gain a deeper understanding of how to create cool 3D experiences by learning the math behind it all. I began this project largely as a way to learn programming and plan to expand this into a larger library of 3D experiences and data visualizations.
+Implementing a 3D physics engine from scracth was inspired by a desire to undertand how beautiful UI elements and particle effects were created. My main goal was to gain a deeper understanding of how to create cool 3D experiences by learning the math behind it all. I began this project largely as a way to learn programming and plan to expand this into a larger library of interactive 3D experiences and data visualizations. 
 
 The sample consists of a variety of different rotating polyhedra and starfields with some basic physics effects. To run the sample:
 ```npm install```
